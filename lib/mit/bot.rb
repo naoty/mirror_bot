@@ -12,6 +12,7 @@ module MiT
     end
 
     def start
+      # TODO: Start scheduler to tweet on time
       @streaming_client.user do |object|
         case object
         when Twitter::Tweet

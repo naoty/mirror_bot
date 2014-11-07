@@ -12,8 +12,7 @@ module MiT
 
         desc "scheduler", "Train mit's scheduler"
         def scheduler
-          # TODO: Train scheduler
-          puts "train mit's scheduler!"
+          Trainer.new.train_scheduler
         end
       end
     end
@@ -21,7 +20,6 @@ module MiT
     desc "start", "Start mit"
     def start
       # TODO: Start human client and bot client on multi-thread
-      puts "mit start!"
     end
 
     desc "train", "Train mit"
