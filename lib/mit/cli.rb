@@ -20,6 +20,7 @@ module MiT
     desc "start", "Start mit"
     def start
       # TODO: Start human client and bot client on multi-thread
+      Bot.new.start
     end
 
     desc "train", "Train mit"

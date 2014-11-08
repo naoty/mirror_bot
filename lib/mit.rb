@@ -1,5 +1,6 @@
 require "mit/bot"
 require "mit/cli"
 require "mit/human"
+require "mit/scheduler"
 require "mit/trainer"
 require "mit/tweet"
