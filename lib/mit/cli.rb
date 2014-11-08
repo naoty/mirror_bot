@@ -19,8 +19,10 @@ module MiT
 
     desc "start", "Start mit"
     def start
-      # TODO: Start human client and bot client on multi-thread
-      Bot.new.start
+      threads = []
+      threads << Thread.new { Bot.new.start }
+      threads << Thread.new { Human.new.start }
+      threads.each(&:join)
     end
 
     desc "train", "Train mit"
