@@ -38,8 +38,10 @@ module MiT
     def determine_schedule!
       @scheduled_minutes.clear
 
-      tweet_count_per_day = rand(TWEET_COUNT_RANGE_PER_DAY)
       accumulated_probabilities = calculate_accumulated_probabilities
+      return if accumulated_probabilities.empty?
+
+      tweet_count_per_day = rand(TWEET_COUNT_RANGE_PER_DAY)
       tweet_count_per_day.times do
         r = rand
         minute = accumulated_probabilities.index { |p| p > r }
@@ -50,17 +52,19 @@ module MiT
 
     def calculate_accumulated_probabilities
       accumulated_probabilities = []
-      accumulated_probability = 0.0
 
       tweets = Tweet.all
       total_count = tweets.count
+      return accumulated_probabilities if total_count.zero?
+
       indexed_tweets = tweets.group_by(&:minute)
+      accumulated_probability = 0.0
 
       # minutes per day
       1439.times do |minute|
         tweets = indexed_tweets[minute]
         tweet_count = tweets.nil? ? 0 : tweets.count
-        probability = tweet_count.to_f / total_count
+        probability = total_count.zero? ? 0.0 : tweet_count.to_f / total_count
         accumulated_probability += probability
         accumulated_probabilities << accumulated_probability
       end
