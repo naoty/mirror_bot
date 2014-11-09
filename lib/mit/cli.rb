@@ -6,8 +6,7 @@ module MiT
       class Train < Thor
         desc "classifier", "Train mit's classifier"
         def classifier
-          # TODO: Train classifier
-          puts "train mit's classifier!"
+          Trainer.new.train_classifier
         end
 
         desc "scheduler", "Train mit's scheduler"
