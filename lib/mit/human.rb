@@ -16,6 +16,7 @@ module MiT
         config.access_token_secret = ENV["HUMAN_ACCESS_TOKEN_SECRET"]
       end
       @user = rest_client.user(skip_status: true)
+      @classifier = Classifier.new
       @trainer = Trainer.new
     end
 
@@ -24,9 +25,11 @@ module MiT
         case object
         when Twitter::Tweet
           @trainer.train_tweet(object) if object.user.id == @user.id
-          # TODO: Train non favorites
+          @classifier.train(object, :normal)
         when Twitter::Streaming::Event
-          # TODO: Train favorites
+          if object.name == :favorite
+            @classifier.train(object.target_object, :favorite)
+          end
         end
       end
     end

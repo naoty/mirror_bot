@@ -16,30 +16,37 @@ module MiT
         config.access_token_secret = ENV["BOT_ACCESS_TOKEN_SECRET"]
       end
       @scheduler = Scheduler.new
+      @classifier = Classifier.new
     end
 
     def start
       threads = []
+      threads << Thread.new { start_scheduler }
+      threads << Thread.new { start_streaming_client }
+      threads.each(&:join)
+    end
 
-      threads << Thread.new do
-        @scheduler.start do
-          now = Time.now
-          minute = now.hour * 60 + now.min
-          tweet = Tweet.sample_by_minute(min: minute - 30 * 60, max: minute + 30 * 60)
-          @rest_client.update(tweet.text)
-        end
+    private
+
+    def start_scheduler
+      @scheduler.start do
+        now = Time.now
+        minute = now.hour * 60 + now.min
+        tweet = Tweet.sample_by_minute(min: minute - 30 * 60, max: minute + 30 * 60)
+        @rest_client.update(tweet.text)
       end
+    end
 
-      threads << Thread.new do
-        @streaming_client.user do |object|
-          case object
-          when Twitter::Tweet
-            # TODO: Classify and favorite a tweet
+    def start_streaming_client
+      @streaming_client.user do |object|
+        case object
+        when Twitter::Tweet
+          case @classifier.classify(object)
+          when :favorite
+            @rest_client.favorite(object)
           end
         end
       end
-
-      threads.each(&:join)
     end
   end
 end
