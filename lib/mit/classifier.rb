@@ -64,7 +64,7 @@ module MiT
       return unless @redis.exists(key)
       return unless @redis.hexists(key, field)
       return if @redis.hget(key, field).to_i < 1
-      @redis.hdecrby(key, field, 1)
+      @redis.hincrby(key, field, -1)
     end
 
     def decrement_category(category)
