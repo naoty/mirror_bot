@@ -1,4 +1,4 @@
-module MiT
+module MirrorBot
   class Tweet < Sequel::Model
     # Heroku Postgresql Free plan is limited up to 10000 rows.
     ROW_LIMIT = 10000

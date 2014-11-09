@@ -1,1 +1,1 @@
-mit: bin/mit start
+bot: bin/mirror_bot start

@@ -1,6 +1,6 @@
 require "twitter"
 
-module MiT
+module MirrorBot
   class Human
     def initialize
       @streaming_client = Twitter::Streaming::Client.new do |config|

@@ -6,5 +6,5 @@ $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
 require "sequel"
 Sequel.connect(ENV["DATABASE_URL"])
 
-require "mit"
-MiT::CLI.start(ARGV)
+require "mirror_bot"
+MirrorBot::CLI.start(ARGV)

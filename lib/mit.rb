@@ -1,7 +1,0 @@
-require "mit/bot"
-require "mit/classifier"
-require "mit/cli"
-require "mit/human"
-require "mit/scheduler"
-require "mit/trainer"
-require "mit/tweet"

@@ -1,0 +1,7 @@
+require "mirror_bot/bot"
+require "mirror_bot/classifier"
+require "mirror_bot/cli"
+require "mirror_bot/human"
+require "mirror_bot/scheduler"
+require "mirror_bot/trainer"
+require "mirror_bot/tweet"

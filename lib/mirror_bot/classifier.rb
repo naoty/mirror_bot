@@ -1,7 +1,7 @@
 require "okura/serializer"
 require "redis"
 
-module MiT
+module MirrorBot
   class Classifier
     CATEGORIES = %i(normal favorite).freeze
     FAVORITE_THRESHOLD = 3

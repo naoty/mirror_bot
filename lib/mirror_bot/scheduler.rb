@@ -1,4 +1,4 @@
-module MiT
+module MirrorBot
   class Scheduler
     SCHEDULE_UPDATE_INTERVAL = 24 * 60 * 60
     SCHEDULE_INTERVAL = 1 * 60

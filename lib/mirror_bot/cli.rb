@@ -1,22 +1,22 @@
 require "thor"
 
-module MiT
+module MirrorBot
   class CLI < Thor
     module Subcommand
       class Train < Thor
-        desc "classifier", "Train mit's classifier"
+        desc "classifier", "Train mirror_bot's classifier"
         def classifier
           Trainer.new.train_classifier
         end
 
-        desc "scheduler", "Train mit's scheduler"
+        desc "scheduler", "Train mirror_bot's scheduler"
         def scheduler
           Trainer.new.train_scheduler
         end
       end
     end
 
-    desc "start", "Start mit"
+    desc "start", "Start mirror_bot"
     def start
       threads = []
       threads << Thread.new { Bot.new.start }
@@ -24,7 +24,7 @@ module MiT
       threads.each(&:join)
     end
 
-    desc "train", "Train mit"
+    desc "train", "Train mirror_bot"
     subcommand "train", Subcommand::Train
   end
 end

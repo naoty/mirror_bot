@@ -1,6 +1,6 @@
 require "twitter"
 
-module MiT
+module MirrorBot
   class Trainer
     def initialize
       @client = Twitter::REST::Client.new do |config|

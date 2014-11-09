@@ -1,6 +1,6 @@
-# MiT
+# Mirror bot
 
-MiT (Myself in Twitter) is a twitter bot which imitates you.
+Mirror bot is a twitter bot mirroring you.
 
 ## Setup
 
