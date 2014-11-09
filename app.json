@@ -1,0 +1,22 @@
+{
+    "name": "mirror_bot",
+    "description": "Twitter bot mirroring you",
+    "repository": "https://github.com/naoty/mirror_bot",
+    "addons": [
+        "heroku-postgresql:hobby-dev",
+        "redistogo:nano"
+    ],
+    "env": {
+        "HUMAN_CONSUMER_KEY": "",
+        "HUMAN_CONSUMER_SECRET": "",
+        "HUMAN_ACCESS_TOKEN": "",
+        "HUMAN_ACCESS_TOKEN_SECRET": "",
+        "BOT_CONSUMER_KEY": "",
+        "BOT_CONSUMER_SECRET": "",
+        "BOT_ACCESS_TOKEN": "",
+        "BOT_ACCESS_TOKEN_SECRET": ""
+    },
+    "scripts": {
+        "postdeploy": "bundle exec sequel -m migrations $DATABASE_URL"
+    }
+}
