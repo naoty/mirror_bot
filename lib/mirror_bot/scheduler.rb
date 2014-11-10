@@ -2,7 +2,6 @@ module MirrorBot
   class Scheduler
     SCHEDULE_UPDATE_INTERVAL = 24 * 60 * 60
     SCHEDULE_INTERVAL = 1 * 60
-    TWEET_COUNT_RANGE_PER_DAY = (10..20)
 
     def initialize
       @threads = []
@@ -41,7 +40,6 @@ module MirrorBot
       accumulated_probabilities = calculate_accumulated_probabilities
       return if accumulated_probabilities.empty?
 
-      tweet_count_per_day = rand(TWEET_COUNT_RANGE_PER_DAY)
       tweet_count_per_day.times do
         r = rand
         minute = accumulated_probabilities.index { |p| p > r }
@@ -70,6 +68,13 @@ module MirrorBot
       end
 
       accumulated_probabilities
+    end
+
+    def tweet_count_per_day
+      tweets = Tweet.all
+      grouped_tweets = tweets.group_by { |tweet| tweet.created_at.to_date }
+      tweet_counts = grouped_tweets.map { |date, tweets| tweets.count }
+      tweet_counts.sample
     end
 
     def on_time?

@@ -32,6 +32,7 @@ module MirrorBot
       attributes[:tweet_id] = tweet.id
       attributes[:text] = tweet.text
       attributes[:minute] = tweet.created_at.hour * 60 + tweet.created_at.min
+      attributes[:created_at] = tweet.created_at
 
       unless tweet.in_reply_to_user_id.nil?
         attributes[:reply_user_id] = tweet.in_reply_to_user_id
