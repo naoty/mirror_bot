@@ -17,6 +17,6 @@
         "BOT_ACCESS_TOKEN_SECRET": ""
     },
     "scripts": {
-        "postdeploy": "bundle exec sequel -m migrations $DATABASE_URL"
+        "postdeploy": "bundle exec sequel -m migrations $DATABASE_URL && bin/mit train scheduler && bin/mit train classifier"
     }
 }

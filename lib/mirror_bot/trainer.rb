@@ -1,3 +1,4 @@
+require "redis"
 require "twitter"
 
 module MirrorBot
@@ -9,17 +10,20 @@ module MirrorBot
         config.access_token = ENV["HUMAN_ACCESS_TOKEN"]
         config.access_token_secret = ENV["HUMAN_ACCESS_TOKEN_SECRET"]
       end
+      @redis = Redis.new(url: ENV["REDISTOGO_URL"])
     end
 
     def train_scheduler
-      # User timeline API returns only up to 3,200 tweets
-      options = { count: 200 }
-      16.times do
-        tweets = @client.user_timeline(options)
-        tweets.each do |tweet|
-          train_tweet(tweet)
+      ensure_trained_only_once("scheduler") do
+        # User timeline API returns only up to 3,200 tweets
+        options = { count: 200 }
+        16.times do
+          tweets = @client.user_timeline(options)
+          tweets.each do |tweet|
+            train_tweet(tweet)
+          end
+          options[:max_id] = tweets.last.id - 1
         end
-        options[:max_id] = tweets.last.id - 1
       end
     end
 
@@ -29,13 +33,21 @@ module MirrorBot
     end
 
     def train_classifier
-      @favorite_ids = []
-      @classifier = Classifier.new
-      train_favorites
-      train_normals
+      ensure_trained_only_once("classifier") do
+        @favorite_ids = []
+        @classifier = Classifier.new
+        train_favorites
+        train_normals
+      end
     end
 
     private
+
+    def ensure_trained_only_once(key, &block)
+      return if @redis.exists("trained:#{key}")
+      block.call
+      @redis.set("trained:#{key}", true)
+    end
 
     def train_favorites
       options = { count: 100 }
