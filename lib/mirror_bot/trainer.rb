@@ -28,8 +28,16 @@ module MirrorBot
     end
 
     def train_tweet(tweet)
-      minute = tweet.created_at.hour * 60 + tweet.created_at.min
-      Tweet.create(tweet_id: tweet.id, text: tweet.text, minute: minute)
+      attributes = {}
+      attributes[:tweet_id] = tweet.id
+      attributes[:text] = tweet.text
+      attributes[:minute] = tweet.created_at.hour * 60 + tweet.created_at.min
+
+      unless tweet.in_reply_to_user_id.nil?
+        attributes[:reply_user_id] = tweet.in_reply_to_user_id
+      end
+
+      Tweet.create(attributes)
     end
 
     def train_classifier

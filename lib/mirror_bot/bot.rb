@@ -38,6 +38,7 @@ module MirrorBot
     end
 
     def start_streaming_client
+      bot = @rest_client.user(skip_status: true)
       @streaming_client.user do |object|
         case object
         when Twitter::Tweet
@@ -45,8 +46,15 @@ module MirrorBot
           when :favorite
             @rest_client.favorite(object)
           end
+          reply_to(object) if object.in_reply_to_user_id == bot.id
         end
       end
+    end
+
+    def reply_to(tweet)
+      replies = Tweet.where(reply_user_id: tweet.user.id)
+      reply = replies.to_a.sample
+      @rest_client.update(reply.text, in_reply_to_status: tweet)
     end
   end
 end
