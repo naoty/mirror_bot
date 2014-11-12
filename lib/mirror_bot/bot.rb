@@ -39,15 +39,21 @@ module MirrorBot
 
     def start_streaming_client
       bot = @rest_client.user(skip_status: true)
-      @streaming_client.user do |object|
-        case object
-        when Twitter::Tweet
-          case @classifier.classify(object)
-          when :favorite
-            @rest_client.favorite(object)
+      begin
+        @streaming_client.user do |object|
+          case object
+          when Twitter::Tweet
+            case @classifier.classify(object)
+            when :favorite
+              @rest_client.favorite(object)
+            end
+            reply_to(object) if object.in_reply_to_user_id == bot.id
           end
-          reply_to(object) if object.in_reply_to_user_id == bot.id
         end
+      rescue EOFError
+        puts "Bot stream has been disconnected. Retry to connect."
+        sleep 10
+        retry
       end
     end
 

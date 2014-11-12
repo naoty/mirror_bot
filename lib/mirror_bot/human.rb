@@ -21,16 +21,22 @@ module MirrorBot
     end
 
     def start
-      @streaming_client.user do |object|
-        case object
-        when Twitter::Tweet
-          @trainer.train_tweet(object) if object.user.id == @user.id
-          @classifier.train(object, :normal)
-        when Twitter::Streaming::Event
-          if object.name == :favorite
-            @classifier.train(object.target_object, :favorite)
+      begin
+        @streaming_client.user do |object|
+          case object
+          when Twitter::Tweet
+            @trainer.train_tweet(object) if object.user.id == @user.id
+            @classifier.train(object, :normal)
+          when Twitter::Streaming::Event
+            if object.name == :favorite
+              @classifier.train(object.target_object, :favorite)
+            end
           end
         end
+      rescue EOFError
+        puts "Human stream has been disconnected. Retry to connect."
+        sleep 10
+        retry
       end
     end
   end
