@@ -52,6 +52,11 @@ module MirrorBot
       end
     end
 
+    def clear
+      Tweet.where.delete
+      @redis.flushall
+    end
+
     private
 
     def ensure_trained_only_once(key, &block)

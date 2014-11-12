@@ -13,6 +13,11 @@ module MirrorBot
         def scheduler
           Trainer.new.train_scheduler
         end
+
+        desc "clear", "Clear train data"
+        def clear
+          Trainer.new.clear
+        end
       end
     end
 
