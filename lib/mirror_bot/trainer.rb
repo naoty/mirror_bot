@@ -28,6 +28,8 @@ module MirrorBot
     end
 
     def train_tweet(tweet)
+      return if tweet.retweet?
+
       attributes = {}
       attributes[:tweet_id] = tweet.id
       attributes[:text] = tweet.text
