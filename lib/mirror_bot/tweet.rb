@@ -3,14 +3,28 @@ module MirrorBot
     # Heroku Postgresql Free plan is limited up to 10000 rows.
     ROW_LIMIT = 10000
 
+    MINUTES_PER_DAY = 24 * 60
+    SAMPLE_MINUTE_RANGE = 30
+
+    dataset_module do
+      def sample_by_minute(minute)
+        min_minute = minute - SAMPLE_MINUTE_RANGE
+        max_minute = minute + SAMPLE_MINUTE_RANGE
+        if min_minute < 0
+          dataset = where(minute: (MINUTES_PER_DAY + min_minute)...MINUTES_PER_DAY).or(minute: 0..max_minute)
+        elsif max_minute >= MINUTES_PER_DAY
+          dataset = where(minute: min_minute...MINUTES_PER_DAY).or(minute: 0..(max_minute - MINUTES_PER_DAY))
+        else
+          dataset = where(minute: min_minute..max_minute)
+        end
+        dataset
+      end
+    end
+
     def before_create
       ensure_timestamp
       ensure_row_limit
       super
-    end
-
-    def self.sample_by_minute(min: 0, max: 24 * 60)
-      self.where(minute: min..max).to_a.sample
     end
 
     private

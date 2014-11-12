@@ -32,7 +32,8 @@ module MirrorBot
       @scheduler.start do
         now = Time.now
         minute = now.hour * 60 + now.min
-        tweet = Tweet.sample_by_minute(min: minute - 30 * 60, max: minute + 30 * 60)
+        tweets = Tweet.where(reply_user_id: nil).sample_by_minute(minute)
+        tweet = tweets.to_a.sample
         @rest_client.update(tweet.text)
       end
     end
