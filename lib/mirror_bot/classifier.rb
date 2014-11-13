@@ -5,6 +5,8 @@ module MirrorBot
   class Classifier
     CATEGORIES = %i(normal favorite).freeze
     FAVORITE_THRESHOLD = 3
+    INITIAL_PROBABILITY = 0.1
+    INITIAL_PROBABILITY_WEIGHT = 5.0
 
     def initialize
       dictionary_path = File.expand_path("../../assets/okura-dic", __dir__)
@@ -78,10 +80,20 @@ module MirrorBot
       features = parse_into_features(tweet.text)
       features << tweet.user.screen_name
       accumulated_probability = features.reduce(1) do |p, feature|
-        p *= calculate_feature_probability(feature, category)
+        p *= calculate_feature_weighted_probability(feature, category)
       end
       category_probability = calculate_category_probability(category)
       accumulated_probability * category_probability
+    end
+
+    def calculate_feature_weighted_probability(feature, category)
+      key = "features:#{feature}"
+
+      probability = calculate_feature_probability(feature, category)
+      total_count = CATEGORIES.reduce(0) do |count, category|
+        count += @redis.hget(key, "categories:#{category}").to_i
+      end
+      (INITIAL_PROBABILITY * INITIAL_PROBABILITY_WEIGHT + total_count * probability).to_f / (total_count + INITIAL_PROBABILITY_WEIGHT)
     end
 
     def calculate_feature_probability(feature, category)
