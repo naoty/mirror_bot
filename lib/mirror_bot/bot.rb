@@ -44,11 +44,8 @@ module MirrorBot
         @streaming_client.user do |object|
           case object
           when Twitter::Tweet
-            case @classifier.classify(object)
-            when :favorite
-              @rest_client.favorite(object)
-            end
             reply_to(object) if object.in_reply_to_user_id == bot.id
+            favorite(object) if @classifier.classify(object) == :favorite
           end
         end
       rescue EOFError
@@ -62,6 +59,11 @@ module MirrorBot
       replies = Tweet.where(reply_user_id: tweet.user.id)
       reply = replies.to_a.sample
       @rest_client.update(reply.text, in_reply_to_status: tweet)
+    end
+
+    def favorite(tweet)
+      return if tweet.retweet?
+      @rest_client.favorite(object)
     end
   end
 end
