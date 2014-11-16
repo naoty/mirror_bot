@@ -63,7 +63,7 @@ module MirrorBot
 
     def favorite(tweet)
       return if tweet.retweet?
-      @rest_client.favorite(object)
+      @rest_client.favorite(tweet)
     end
   end
 end

@@ -4,7 +4,7 @@ require "redis"
 module MirrorBot
   class Classifier
     CATEGORIES = %i(normal favorite).freeze
-    FAVORITE_THRESHOLD = (ENV["FAVORITE_THRESHOLD"] || 3).to_i
+    FAVORITE_RATE_THRESHOLD = (ENV["FAVORITE_RATE_THRESHOLD"] || 3).to_i
     INITIAL_PROBABILITY = 0.1
     INITIAL_PROBABILITY_WEIGHT = 5.0
 
@@ -17,7 +17,8 @@ module MirrorBot
     def classify(tweet)
       favorite_probability = calculate_probability(tweet, :favorite)
       normal_probability = calculate_probability(tweet, :normal)
-      favorite_probability > normal_probability * FAVORITE_THRESHOLD ? :favorite : :normal
+      favorite_rate = favorite_probability / normal_probability
+      favorite_rate > FAVORITE_RATE_THRESHOLD ? :favorite : :normal
     end
 
     def train(tweet, category)
