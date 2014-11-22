@@ -4,7 +4,7 @@ require "redis"
 module MirrorBot
   class Classifier
     CATEGORIES = %i(normal favorite).freeze
-    FAVORITE_RATE_THRESHOLD = (ENV["FAVORITE_RATE_THRESHOLD"] || 3).to_i
+    FAVORITE_RATE_THRESHOLD = (ENV["FAVORITE_RATE_THRESHOLD"] || 3.0).to_f
     INITIAL_PROBABILITY = 0.1
     INITIAL_PROBABILITY_WEIGHT = 5.0
 
